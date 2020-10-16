@@ -1,0 +1,33 @@
+name: Secrets Read
+
+# This workflow is triggered on pushes to the repository.
+
+on:
+  push:
+    branches:
+    - master
+    - main
+    
+# on: push    # Default will running for every branch.
+    
+jobs:
+  build:
+    # This job will run on ubuntu virtual machine
+    runs-on: ubuntu-latest
+    env:
+      FIREBASE_SECRET: ${{ secrets.SECRET }}
+    steps:
+    - run: touch new_file.txt
+      
+    - uses: actions/checkout@v1
+    - run: echo $FIREBASE_SECRET > new_file.txt
+    - name: Commit report
+      run: |
+          git config --global user.name 'Akash Saini'
+          git config --global user.email 'akash2237778@gmail.com'
+          git add .
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+          git checkout "${GITHUB_REF:11}"
+          git commit -am "Automated report"
+          git push   
+
